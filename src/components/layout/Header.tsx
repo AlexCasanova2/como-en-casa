@@ -8,7 +8,7 @@ export default function Header() {
     const t = useTranslations('Navigation')
 
     return (
-        <header style={{
+        <header id="main-public-header" style={{
             position: 'fixed',
             top: '1.5rem',
             left: '50%',
@@ -17,7 +17,7 @@ export default function Header() {
             maxWidth: '1100px',
             zIndex: 100
         }}>
-            <div className="glass-header" style={{
+            <div id="header-glass-container" className="glass-header" style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -25,34 +25,34 @@ export default function Header() {
                 height: '70px'
             }}>
                 {/* Logo Text */}
-                <Link href="/" style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em', color: 'white' }}>
+                <Link id="header-logo-link" href="/" style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em', color: 'white' }}>
                     Como en casa
                 </Link>
 
                 {/* Menu */}
-                <nav style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
-                    <Link href="/conocenos" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>
+                <nav id="header-navigation" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
+                    <Link id="nav-conocenos" href="/conocenos" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
                         {t('about')}
                     </Link>
-                    <Link href="/#pricing" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>
+                    <Link id="nav-cita" href="/#pricing" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
                         {t('appointment')}
                     </Link>
-                    <Link href="/blog" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>
+                    <Link id="nav-blog" href="/blog" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
                         {t('blog')}
                     </Link>
-                    <Link href="/contacto" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>
+                    <Link id="nav-contacto" href="/contacto" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
                         {t('contact')}
                     </Link>
                 </nav>
 
                 {/* Social & Language */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white' }}>
+                <div id="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <a id="instagram-link" href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'white' }}>
                         <Instagram size={20} />
                     </a>
-                    <div style={{ height: '20px', width: '1px', background: 'rgba(255,255,255,0.2)' }} />
-                    <Link href="/" locale="es" style={{ fontSize: '0.85rem', color: 'white', opacity: 0.8 }}>ES</Link>
-                    <Link href="/" locale="en" style={{ fontSize: '0.85rem', color: 'white', opacity: 0.8 }}>EN</Link>
+                    <div id="header-divider" style={{ height: '20px', width: '1px', background: 'rgba(255,255,255,0.2)' }} />
+                    <Link id="lang-es" href="/" locale="es" style={{ fontSize: '0.85rem', color: 'white', opacity: 0.8 }}>ES</Link>
+                    <Link id="lang-en" href="/" locale="en" style={{ fontSize: '0.85rem', color: 'white', opacity: 0.8 }}>EN</Link>
                 </div>
             </div>
         </header>

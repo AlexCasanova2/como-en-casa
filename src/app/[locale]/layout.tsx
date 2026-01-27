@@ -6,17 +6,12 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 
-const Scene = dynamic(() => import('@/components/canvas/Scene'), {
-    ssr: false,
-    loading: () => <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fdf6e3', color: '#d4a373' }}>Cargando paz...</div>
-})
-
-import Header from '@/components/layout/Header'
-
 export const metadata: Metadata = {
     title: 'Como en casa',
     description: 'Apoyo psicológico para nómadas digitales y ciudadanos globales.',
 }
+
+import LayoutWrapper from '@/components/layout/LayoutWrapper'
 
 export default async function RootLayout({
     children,
@@ -30,20 +25,16 @@ export default async function RootLayout({
         notFound();
     }
 
-    // Obtener mensajes para el provider (opcional si solo usas server components, pero útil para componentes de cliente)
+    // Obtener mensajes para el provider
     const messages = await getMessages();
 
     return (
         <html lang={locale}>
             <body>
                 <NextIntlClientProvider messages={messages}>
-                    <Header />
-                    <div className="canvas-container">
-                        <Scene />
-                    </div>
-                    <main className="main-content">
+                    <LayoutWrapper>
                         {children}
-                    </main>
+                    </LayoutWrapper>
                 </NextIntlClientProvider>
             </body>
         </html>

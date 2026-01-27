@@ -64,11 +64,19 @@ export async function updateSession(request: NextRequest, response?: NextRespons
 
     const { data: { user } } = await supabase.auth.getUser()
 
-    // Proteger rutas /admin
-    if (request.nextUrl.pathname.startsWith('/admin')) {
-        // Si no hay usuario y no está en /admin/login, redirigir a login
-        if (!user && request.nextUrl.pathname !== '/admin/login') {
-            return NextResponse.redirect(new URL('/admin/login', request.url))
+    // Proteger rutas /admin (teniendo en cuenta localización)
+    const isEnAdmin = request.nextUrl.pathname.startsWith('/en/admin')
+    const isEsAdmin = request.nextUrl.pathname.startsWith('/es/admin')
+    const isAdmin = request.nextUrl.pathname.startsWith('/admin')
+
+    if (isAdmin || isEnAdmin || isEsAdmin) {
+        const currentLocale = isEnAdmin ? '/en' : isEsAdmin ? '/es' : ''
+        const loginPath = `${currentLocale}/admin/login`
+        const dashboardPath = `${currentLocale}/admin/dashboard/pagos`
+
+        // Si no hay usuario y no está en login, redirigir a login
+        if (!user && request.nextUrl.pathname !== loginPath) {
+            return NextResponse.redirect(new URL(loginPath, request.url))
         }
 
         // Si hay usuario, verificar rol admin
@@ -79,14 +87,14 @@ export async function updateSession(request: NextRequest, response?: NextRespons
                 .eq('id', user.id)
                 .single()
 
-            if (profile?.role !== 'admin' && request.nextUrl.pathname !== '/admin/login') {
-                // Podríamos redirigir a una página de "no autorizado" o al home
-                return NextResponse.redirect(new URL('/', request.url))
+            if (profile?.role !== 'admin' && request.nextUrl.pathname !== loginPath) {
+                // Redirigir al home si no es admin
+                return NextResponse.redirect(new URL(`${currentLocale}/`, request.url))
             }
 
             // Si ya está logueado como admin y está en login, redirigir a dashboard
-            if (profile?.role === 'admin' && request.nextUrl.pathname === '/admin/login') {
-                return NextResponse.redirect(new URL('/admin/dashboard/pagos', request.url))
+            if (profile?.role === 'admin' && request.nextUrl.pathname === loginPath) {
+                return NextResponse.redirect(new URL(dashboardPath, request.url))
             }
         }
     }

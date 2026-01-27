@@ -11,7 +11,10 @@
         "title": "Un refugio en movimiento",
         "subtitle": "No importa cuántos sellos tenga tu pasaporte, tu salud mental merece un lugar seguro.",
         "description": "Como en casa nace de la necesidad de ofrecer un espacio terapéutico que entienda la movilidad constante. Somos un equipo de psicólogas que también hemos sido expatriadas, entendemos tu mundo.",
-        "cta": "Conoce al equipo"
+        "cta": "Conoce al equipo",
+        "fullDescription": "En Como en casa, creemos que la movilidad geográfica no debería ser un obstáculo para recibir un apoyo psicológico de calidad. Nuestro equipo está compuesto por psicólogas colegiadas con amplia trayectoria internacional, especializadas en los retos únicos que enfrentan quienes han decidido construir su vida lejos de sus raíces.",
+        "teamTitle": "Nuestro Equipo",
+        "teamSubtitle": "Profesionales comprometidas con tu bienestar, sin fronteras."
     },
     "Pricing": {
         "title": "Terapia Simple y Transparente",
@@ -48,17 +51,54 @@
             {
                 "title": "Gestionar el duelo migratorio",
                 "excerpt": "Sentirse triste al mudarse es normal. Descubre cómo transitar este proceso.",
+                "content": "El duelo migratorio es un proceso psicológico natural que ocurre cuando nos trasladamos de un país a otro. No es solo la pérdida de un lugar físico, sino de una red de apoyo, un rol social y una identidad cultural. En 'Como en casa', te ayudamos a entender que sentir tristeza, desorientación o incluso irritabilidad es parte del camino. \n\nPara transitarlo con salud, es vital permitirse sentir estas emociones sin juzgarlas. Mantener el contacto con tus raíces mientras construyes nuevos puentes en tu destino es el equilibrio que buscamos. Recuerda: no te has ido para sufrir, te has ido para crecer, y el crecimiento a veces duele.",
                 "date": "22 Ene, 2024"
             },
             {
                 "title": "Rutinas para nómadas",
                 "excerpt": "Cómo mantener la salud mental cuando tu oficina cambia cada semana.",
+                "content": "La vida nómada digital promete libertad, pero puede ser un reto para nuestra estabilidad emocional. Sin rutinas claras, el cerebro puede entrar en un estado de alerta constante. Establecer un 'kit de supervivencia mental' es esencial: un horario de trabajo definido, momentos de desconexión digital total y la búsqueda de comunidades locales, aunque sea por poco tiempo.\n\nEn nuestras sesiones, trabajamos en crear anclajes emocionales que no dependan de una ubicación geográfica específica. Tu hogar no es una dirección, eres tú.",
                 "date": "15 Ene, 2024"
             },
             {
                 "title": "Terapia online: ¿Funciona?",
                 "excerpt": "Todo lo que necesitas saber sobre la eficacia de las sesiones por videollamada.",
+                "content": "Numerosos estudios demuestran que la terapia online es tan eficaz como la presencial para la mayoría de los trastornos psicológicos. La clave reside en el vínculo terapéutico. La videollamada elimina las barreras geográficas y permite que personas con alta movilidad, como los nómadas digitales, puedan mantener una continuidad que antes era imposible.\n\nLa comodidad de tu propio espacio y la flexibilidad horaria son ventajas competitivas que reducen el abandono escolar y aumentan el compromiso con el proceso terapéutico.",
                 "date": "08 Ene, 2024"
+            }
+        ]
+    },
+    "Contact": {
+        "title": "¿Hablamos?",
+        "subtitle": "Si tienes alguna duda que no esté en las preguntas frecuentes, escríbenos y te responderemos lo antes posible.",
+        "formName": "Nombre completo",
+        "formEmail": "Correo electrónico",
+        "formSubject": "Asunto",
+        "formMessage": "Tu mensaje",
+        "formSubmit": "Enviar mensaje",
+        "infoTitle": "Canales directos",
+        "emailLabel": "Escríbenos a",
+        "instaLabel": "Síguenos en"
+    },
+    "FAQ": {
+        "title": "Preguntas Frecuentes",
+        "subtitle": "Todo lo que necesitas saber antes de empezar tu proceso terapéutico con nosotras.",
+        "items": [
+            {
+                "q": "¿Cómo sé si la terapia online es para mí?",
+                "a": "La terapia online es ideal si buscas flexibilidad, viajas con frecuencia o prefieres la comodidad de tu propio espacio. Es tan eficaz como la presencial y facilita la continuidad del proceso."
+            },
+            {
+                "q": "¿Qué pasa si cambio de zona horaria?",
+                "a": "No hay problema. Nuestro sistema de reserva se ajusta automáticamente a tu ubicación actual. Solo asegúrate de actualizar tu zona horaria al reservar."
+            },
+            {
+                "q": "¿Es confidencial?",
+                "a": "Absolutamente. Utilizamos plataformas seguras con cifrado de extremo a extremo que cumplen con todas las normativas de protección de datos de salud."
+            },
+            {
+                "q": "¿Cómo realizo el pago?",
+                "a": "Aceptamos pagos con tarjeta de crédito/débito y otros métodos seguros a través de Stripe. Puedes pagar sesión a sesión o adquirir un pack con descuento."
             }
         ]
     },

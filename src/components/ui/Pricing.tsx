@@ -32,63 +32,45 @@ export default function PricingSection() {
     }
 
     return (
-        <section className="section" id="pricing">
-            <h2 style={{ fontSize: '3rem', marginBottom: '1rem', color: 'var(--foreground)', textAlign: 'center' }}>{t('title')}</h2>
-            <p style={{ marginBottom: '3rem', opacity: 0.8, fontSize: '0.9rem', textAlign: 'center', color: 'var(--text-soft)' }}>
-                {t('timezoneNotice')} <strong>{userTimezone || '...'}</strong>
+        <section className="section" id="pricing" style={{ padding: '10rem 10%', background: 'rgba(255,255,255,0.02)' }}>
+            <h2 className="text-glow" style={{ fontSize: '3rem', marginBottom: '1.5rem', color: 'var(--foreground)', textAlign: 'center', fontWeight: 900 }}>{t('title')}</h2>
+            <p className="text-soft" style={{ marginBottom: '4rem', fontSize: '1rem', textAlign: 'center', maxWidth: '600px', marginInline: 'auto' }}>
+                {t('timezoneNotice')} <strong style={{ color: 'var(--accent)' }}>{userTimezone || '...'}</strong>
             </p>
 
-            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '1000px' }}>
+            <div style={{ display: 'flex', gap: '2.5rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '1100px' }}>
 
                 {/* Individual Session */}
-                <div className="glass" style={{ flex: '1', minWidth: '300px', padding: '3rem', borderRadius: '32px', textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-                    <h3 style={{ fontSize: '1.5rem', color: '#ffffff', marginBottom: '1rem' }}>{t('individual')}</h3>
-                    <div style={{ fontSize: '3.5rem', fontWeight: '800', margin: '1rem 0', color: 'var(--foreground)' }}>
-                        60€ <span style={{ fontSize: '1.1rem', fontWeight: 400, opacity: 0.7 }}>{t('perSession')}</span>
+                <div className="glass-card" style={{ flex: '1', minWidth: '320px', padding: '3.5rem', borderRadius: '40px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.6rem', color: '#ffffff', fontWeight: 700 }}>{t('individual')}</h3>
+                    <div style={{ fontSize: '4rem', fontWeight: '900', color: 'var(--foreground)', margin: '0.5rem 0' }}>
+                        60€ <span style={{ fontSize: '1.2rem', fontWeight: 500, opacity: 0.6 }}>{t('perSession')}</span>
                     </div>
-                    <p style={{ flexGrow: 1, opacity: 0.9, marginBottom: '2.5rem', color: 'var(--text-soft)' }}>{t('individualDesc')}</p>
+                    <p className="text-soft" style={{ flexGrow: 1, fontSize: '1.05rem', lineHeight: '1.7' }}>{t('individualDesc')}</p>
                     <button
                         onClick={() => handleCheckout('individual')}
                         disabled={loading !== null}
-                        style={{
-                            padding: '1.1rem',
-                            borderRadius: '50px',
-                            border: 'none',
-                            background: 'rgba(255,255,255,0.9)',
-                            color: '#7a5448',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            fontSize: '1rem',
-                            transition: 'transform 0.2s ease',
-                            opacity: loading === 'individual' ? 0.7 : 1
-                        }}
+                        className="glass-button"
+                        style={{ width: '100%', justifyContent: 'center', background: 'white', color: 'var(--background)' }}
                     >
                         {loading === 'individual' ? '...' : t('bookNow')}
                     </button>
                 </div>
 
                 {/* Nomad Pack */}
-                <div className="glass" style={{ flex: '1', minWidth: '300px', padding: '3rem', borderRadius: '32px', textAlign: 'center', display: 'flex', flexDirection: 'column', border: '2px solid rgba(255,255,255,0.4)' }}>
-                    <div style={{ background: '#ffffff', color: '#7a5448', padding: '0.35rem 1.25rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 700, alignSelf: 'center', marginBottom: '1rem' }}>{t('recommended')}</div>
-                    <h3 style={{ fontSize: '1.5rem', color: '#ffffff', marginBottom: '1rem' }}>{t('pack5')}</h3>
-                    <div style={{ fontSize: '3.5rem', fontWeight: '800', margin: '1rem 0', color: 'var(--foreground)' }}>
-                        250€ <span style={{ fontSize: '1.1rem', fontWeight: 400, opacity: 0.7 }}>{t('perPack')}</span>
+                <div className="glass-card" style={{ flex: '1', minWidth: '320px', padding: '3.5rem', borderRadius: '40px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', border: '1px solid rgba(212, 163, 115, 0.4)', background: 'rgba(212, 163, 115, 0.05)' }}>
+                    <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: 'var(--accent)', color: 'white', padding: '0.5rem 1.5rem', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 800, whiteSpace: 'nowrap', boxShadow: '0 4px 15px rgba(212, 163, 115, 0.4)' }}>{t('recommended')}</div>
+
+                    <h3 style={{ fontSize: '1.6rem', color: '#ffffff', fontWeight: 700 }}>{t('pack5')}</h3>
+                    <div style={{ fontSize: '4rem', fontWeight: '900', color: 'var(--foreground)', margin: '0.5rem 0' }}>
+                        250€ <span style={{ fontSize: '1.2rem', fontWeight: 500, opacity: 0.6 }}>{t('perPack')}</span>
                     </div>
-                    <p style={{ flexGrow: 1, opacity: 0.9, marginBottom: '2.5rem', color: 'var(--text-soft)' }}>{t('pack5Desc')}</p>
+                    <p className="text-soft" style={{ flexGrow: 1, fontSize: '1.05rem', lineHeight: '1.7' }}>{t('pack5Desc')}</p>
                     <button
                         onClick={() => handleCheckout('pack5')}
                         disabled={loading !== null}
-                        style={{
-                            padding: '1.1rem',
-                            borderRadius: '50px',
-                            border: 'none',
-                            background: '#ffffff',
-                            color: '#7a5448',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            fontSize: '1rem',
-                            opacity: loading === 'pack5' ? 0.7 : 1
-                        }}
+                        className="glass-button"
+                        style={{ width: '100%', justifyContent: 'center' }}
                     >
                         {loading === 'pack5' ? '...' : t('buyPack')}
                     </button>

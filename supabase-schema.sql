@@ -50,6 +50,27 @@ ALTER TABLE terapeutas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE servicios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sesiones_compradas ENABLE ROW LEVEL SECURITY;
 
+-- 7. DISPARADORES (TRIGGERS) PARA PERFILES
+-- Función para crear perfil automáticamente al registrarse
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, full_name, avatar_url, role)
+  VALUES (
+    NEW.id,
+    NEW.raw_user_meta_data->>'full_name',
+    NEW.raw_user_meta_data->>'avatar_url',
+    COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'paciente')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger que se dispara tras insertar en auth.users
+CREATE OR REPLACE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
 -- Políticas para Profiles
 CREATE POLICY "Perfiles visibles por todos" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Usuarios pueden actualizar su propio perfil" ON profiles FOR UPDATE USING (auth.uid() = id);

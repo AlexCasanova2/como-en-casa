@@ -11,7 +11,10 @@
         "title": "A sanctuary in motion",
         "subtitle": "No matter how many stamps are on your passport, your mental health deserves a safe place.",
         "description": "Como en casa was born from the need to offer a therapeutic space that understands constant mobility. We are a team of psychologists who have also been expats; we understand your world.",
-        "cta": "Meet the team"
+        "cta": "Meet the team",
+        "fullDescription": "At Como en casa, we believe that geographic mobility should not be an obstacle to receiving quality psychological support. Our team is made up of registered psychologists with extensive international experience, specialized in the unique challenges faced by those who have decided to build their lives away from their roots.",
+        "teamTitle": "Our Team",
+        "teamSubtitle": "Professionals committed to your wellbeing, without borders."
     },
     "Pricing": {
         "title": "Simple, Transparent Therapy",
@@ -48,17 +51,54 @@
             {
                 "title": "Managing migration grief",
                 "excerpt": "Feeling sad when moving is normal. Discover how to navigate this process.",
+                "content": "Migration grief is a natural psychological process that occurs when we move from one country to another. It is not just the loss of a physical place, but of a support network, a social role, and a cultural identity. At 'Como en casa', we help you understand that feeling sad, disoriented, or even irritable is part of the journey. \n\nTo navigate it healthily, it is vital to allow yourself to feel these emotions without judgment. Maintaining contact with your roots while building new bridges in your destination is the balance we seek. Remember: you didn't leave to suffer, you left to grow, and growth sometimes hurts.",
                 "date": "Jan 22, 2024"
             },
             {
                 "title": "Routines for nomads",
                 "excerpt": "How to maintain mental health when your office changes every week.",
+                "content": "Digital nomad life promises freedom, but it can be a challenge for our emotional stability. Without clear routines, the brain can enter a state of constant alert. Establishing a 'mental survival kit' is essential: a defined work schedule, moments of total digital disconnection, and the search for local communities, even if only for a short time.\n\nIn our sessions, we work on creating emotional anchors that do not depend on a specific geographic location. Your home is not an address, it is you.",
                 "date": "Jan 15, 2024"
             },
             {
                 "title": "Online therapy: Does it work?",
                 "excerpt": "Everything you need to know about the effectiveness of video sessions.",
+                "content": "Numerous studies show that online therapy is as effective as face-to-face therapy for most psychological disorders. The key lies in the therapeutic bond. Video calls eliminate geographical barriers and allow people with high mobility, such as digital nomads, to maintain a continuity that was previously impossible.\n\nThe comfort of your own space and schedule flexibility are competitive advantages that reduce dropout rates and increase commitment to the therapeutic process.",
                 "date": "Jan 08, 2024"
+            }
+        ]
+    },
+    "Contact": {
+        "title": "Let's Talk",
+        "subtitle": "If you have any questions not covered in the FAQ, write to us and we'll get back to you as soon as possible.",
+        "formName": "Full name",
+        "formEmail": "Email address",
+        "formSubject": "Subject",
+        "formMessage": "Your message",
+        "formSubmit": "Send message",
+        "infoTitle": "Direct channels",
+        "emailLabel": "Write to us at",
+        "instaLabel": "Follow us on"
+    },
+    "FAQ": {
+        "title": "Frequent Questions",
+        "subtitle": "Everything you need to know before starting your therapeutic process with us.",
+        "items": [
+            {
+                "q": "How do I know if online therapy is for me?",
+                "a": "Online therapy is ideal if you're looking for flexibility, travel frequently, or prefer the comfort of your own space. It's as effective as face-to-face therapy and facilitates the continuity of the process."
+            },
+            {
+                "q": "What if I change timezones?",
+                "a": "No problem. Our booking system automatically adjusts to your current location. Just make sure to update your timezone when booking."
+            },
+            {
+                "q": "Is it confidential?",
+                "a": "Absolutely. We use secure platforms with end-to-end encryption that comply with all health data protection regulations."
+            },
+            {
+                "q": "How do I make a payment?",
+                "a": "We accept credit/debit card payments and other secure methods through Stripe. You can pay session by session or purchase a discounted pack."
             }
         ]
     },
