@@ -14,8 +14,8 @@ const Scene = dynamic(() => import('@/components/canvas/Scene'), {
 import Header from '@/components/layout/Header'
 
 export const metadata: Metadata = {
-    title: 'Como En Casa | Next.js + Three.js Landing',
-    description: 'Premium landing page for digital nomads with 3D animations and Next.js 14',
+    title: 'Como en casa',
+    description: 'Apoyo psicológico para nómadas digitales y ciudadanos globales.',
 }
 
 export default async function RootLayout({
