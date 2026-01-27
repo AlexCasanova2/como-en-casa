@@ -1,7 +1,7 @@
 'use client'
 
 import { Canvas, useFrame } from '@react-three/fiber'
-import { PerspectiveCamera, Float, ContactShadows, RoundedBox, Sparkles, SpotLight } from '@react-three/drei'
+import { PerspectiveCamera, Float, ContactShadows, RoundedBox, Sparkles, SpotLight, Preload } from '@react-three/drei'
 import { Suspense, useRef, useMemo, useState, useEffect } from 'react'
 import * as THREE from 'three'
 
@@ -179,6 +179,7 @@ export default function Scene() {
                 <Content />
                 <Sparkles count={150} scale={[12, 12, 12]} size={2.5} speed={0.5} opacity={0.3} color="#ffcc33" />
                 <ContactShadows position={[0, -2.8, 0]} opacity={0.3} scale={25} blur={2.2} far={4} />
+                <Preload all />
             </Suspense>
         </Canvas>
     )

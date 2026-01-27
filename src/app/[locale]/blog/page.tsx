@@ -31,13 +31,14 @@ export default async function BlogListingPage({ params: { locale } }: { params: 
             {/* GRID */}
             <section id="blog-grid-section" style={{ padding: '4rem 10% 10rem' }}>
                 <div id="blog-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem', maxWidth: '1200px', marginInline: 'auto' }}>
-                    {posts?.map((post) => (
+                    {posts?.map((post, index) => (
                         <Link key={post.id} href={`/blog/${post.slug}`} id={`blog-post-card-${post.slug}`} className="glass-card hover-lift" style={{ borderRadius: '40px', overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none' }}>
                             <div style={{ position: 'relative', width: '100%', height: '240px' }}>
                                 <Image
                                     src={post.image_url || "/images/blog_header.png"}
                                     alt={post.title}
                                     fill
+                                    priority={index < 2}
                                     style={{ objectFit: 'cover', opacity: 0.8 }}
                                 />
                                 <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', padding: '0.5rem 1rem', borderRadius: '12px', fontSize: '0.8rem', color: 'white', fontWeight: 600 }}>

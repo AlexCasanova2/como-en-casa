@@ -1,17 +1,33 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import dynamic from 'next/dynamic'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { Inter, Outfit } from 'next/font/google'
+import LayoutWrapper from '@/components/layout/LayoutWrapper'
+
+const inter = Inter({
+    subsets: ['latin'],
+    variable: '--font-inter',
+    display: 'swap',
+})
+
+const outfit = Outfit({
+    subsets: ['latin'],
+    variable: '--font-outfit',
+    display: 'swap',
+})
 
 export const metadata: Metadata = {
     title: 'Como en casa',
     description: 'Apoyo psicológico para nómadas digitales y ciudadanos globales.',
+    icons: {
+        icon: '/favicon.ico',
+        apple: '/apple-touch-icon.png',
+    },
+    viewport: 'width=device-width, initial-scale=1',
 }
-
-import LayoutWrapper from '@/components/layout/LayoutWrapper'
 
 export default async function RootLayout({
     children,
@@ -29,8 +45,8 @@ export default async function RootLayout({
     const messages = await getMessages();
 
     return (
-        <html lang={locale}>
-            <body>
+        <html lang={locale} className={`${inter.variable} ${outfit.variable}`}>
+            <body style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                 <NextIntlClientProvider messages={messages}>
                     <LayoutWrapper>
                         {children}

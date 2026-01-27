@@ -74,6 +74,7 @@ export default async function BlogPostPage({ params: { id, locale } }: { params:
                     src={post.image_url || "/images/blog_header.png"}
                     alt={post.title}
                     fill
+                    priority
                     style={{ objectFit: 'cover' }}
                 />
             </div>
