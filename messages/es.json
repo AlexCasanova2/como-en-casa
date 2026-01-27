@@ -1,0 +1,70 @@
+{
+    "Index": {
+        "title": "Como en casa, estés donde estés",
+        "subtitle": "Apoyo psicológico para nómadas digitales y ciudadanos globales. Terapia online que viaja contigo, en cualquier zona horaria.",
+        "cta": "Empieza tu camino",
+        "learnMore": "Nuestro enfoque",
+        "onlinePresence": "Alcance Global, Trato Humano",
+        "onlinePresenceDesc": "Sesiones seguras por videollamada diseñadas para una vida sin fronteras. Nos adaptamos a tu ritmo y a tu lugar."
+    },
+    "About": {
+        "title": "Un refugio en movimiento",
+        "subtitle": "No importa cuántos sellos tenga tu pasaporte, tu salud mental merece un lugar seguro.",
+        "description": "Como en casa nace de la necesidad de ofrecer un espacio terapéutico que entienda la movilidad constante. Somos un equipo de psicólogas que también hemos sido expatriadas, entendemos tu mundo.",
+        "cta": "Conoce al equipo"
+    },
+    "Pricing": {
+        "title": "Terapia Simple y Transparente",
+        "individual": "Sesión Individual",
+        "individualDesc": "Ideal para cuando aterrizas en una nueva ciudad o tienes dudas puntuales.",
+        "pack5": "Pack Nómada (5 Sesiones)",
+        "pack5Desc": "Comprométete con tu bienestar mientras exploras el mundo. Ahorra 50€.",
+        "recommended": "RECOMENDADO",
+        "perSession": "/ ses.",
+        "perPack": "/ pack",
+        "bookNow": "Reservar Sesión",
+        "buyPack": "Comprar Pack",
+        "timezoneNotice": "Las sesiones se ajustan automáticamente a tu zona horaria local: "
+    },
+    "Navigation": {
+        "about": "Conócenos",
+        "appointment": "Pedir Cita",
+        "blog": "Blog",
+        "contact": "Contacto"
+    },
+    "Features": {
+        "title": "¿Por qué elegirnos?",
+        "nomadFriendly": "Mentalidad Global",
+        "nomadFriendlyDesc": "Abordamos el duelo migratorio, el choque cultural y el aislamiento desde una perspectiva empática.",
+        "bilingual": "Sin Barreras",
+        "bilingualDesc": "Exprésate en tu lengua materna o en el idioma en el que estás construyendo tu nueva vida.",
+        "flexible": "Flexibilidad Total",
+        "flexibleDesc": "Sabemos que tus planes cambian. Sesiones online que se adaptan a tu agenda itinerante."
+    },
+    "Blog": {
+        "title": "Novedades del Blog",
+        "readMore": "Leer más",
+        "posts": [
+            {
+                "title": "Gestionar el duelo migratorio",
+                "excerpt": "Sentirse triste al mudarse es normal. Descubre cómo transitar este proceso.",
+                "date": "22 Ene, 2024"
+            },
+            {
+                "title": "Rutinas para nómadas",
+                "excerpt": "Cómo mantener la salud mental cuando tu oficina cambia cada semana.",
+                "date": "15 Ene, 2024"
+            },
+            {
+                "title": "Terapia online: ¿Funciona?",
+                "excerpt": "Todo lo que necesitas saber sobre la eficacia de las sesiones por videollamada.",
+                "date": "08 Ene, 2024"
+            }
+        ]
+    },
+    "Footer": {
+        "rights": "© 2026 Como en casa. Todos los derechos reservados.",
+        "privacy": "Privacidad",
+        "terms": "Términos"
+    }
+}

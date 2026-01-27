@@ -1,0 +1,70 @@
+{
+    "Index": {
+        "title": "Feeling at Home, wherever you are",
+        "subtitle": "Mental health support for digital nomads and global citizens. Online therapy that travels with you, across any timezone.",
+        "cta": "Start your journey",
+        "learnMore": "Our approach",
+        "onlinePresence": "Global Reach, Human Touch",
+        "onlinePresenceDesc": "Secure video sessions designed for a life without borders. We adapt to your pace and your place."
+    },
+    "About": {
+        "title": "A sanctuary in motion",
+        "subtitle": "No matter how many stamps are on your passport, your mental health deserves a safe place.",
+        "description": "Como en casa was born from the need to offer a therapeutic space that understands constant mobility. We are a team of psychologists who have also been expats; we understand your world.",
+        "cta": "Meet the team"
+    },
+    "Pricing": {
+        "title": "Simple, Transparent Therapy",
+        "individual": "Single Session",
+        "individualDesc": "Perfect for settling in a new city or addressing immediate concerns.",
+        "pack5": "Nomad Pack (5 Sessions)",
+        "pack5Desc": "Commit to your wellbeing while you explore the world. Best for continuous growth.",
+        "recommended": "BEST VALUE",
+        "perSession": "/ session",
+        "perPack": "/ pack",
+        "bookNow": "Book Session",
+        "buyPack": "Purchase Pack",
+        "timezoneNotice": "Sessions are automatically adjusted to your local timezone: "
+    },
+    "Navigation": {
+        "about": "About Us",
+        "appointment": "Book Appointment",
+        "blog": "Blog",
+        "contact": "Contact"
+    },
+    "Features": {
+        "title": "Why choose us?",
+        "nomadFriendly": "Global Mindset",
+        "nomadFriendlyDesc": "We address migration grief, culture shock, and isolation from an empathetic perspective.",
+        "bilingual": "Zero Barriers",
+        "bilingualDesc": "Express yourself in your native language or the one you are building your new life in.",
+        "flexible": "Total Flexibility",
+        "flexibleDesc": "We know your plans change. Online sessions that adapt to your itinerant schedule."
+    },
+    "Blog": {
+        "title": "Latest from the Blog",
+        "readMore": "Read more",
+        "posts": [
+            {
+                "title": "Managing migration grief",
+                "excerpt": "Feeling sad when moving is normal. Discover how to navigate this process.",
+                "date": "Jan 22, 2024"
+            },
+            {
+                "title": "Routines for nomads",
+                "excerpt": "How to maintain mental health when your office changes every week.",
+                "date": "Jan 15, 2024"
+            },
+            {
+                "title": "Online therapy: Does it work?",
+                "excerpt": "Everything you need to know about the effectiveness of video sessions.",
+                "date": "Jan 08, 2024"
+            }
+        ]
+    },
+    "Footer": {
+        "rights": "© 2026 Como en casa. All rights reserved.",
+        "privacy": "Privacy",
+        "terms": "Terms"
+    }
+}
