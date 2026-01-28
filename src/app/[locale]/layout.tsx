@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { Inter, Outfit } from 'next/font/google'
 import LayoutWrapper from '@/components/layout/LayoutWrapper'
+import SkipToContent from '@/components/ui/SkipToContent'
 
 const inter = Inter({
     subsets: ['latin'],
@@ -18,6 +19,11 @@ const outfit = Outfit({
     variable: '--font-outfit',
     display: 'swap',
 })
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+}
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: 'Metadata' });
@@ -53,7 +59,6 @@ export async function generateMetadata({ params: { locale } }: { params: { local
             icon: '/favicon.ico',
             apple: '/apple-touch-icon.png',
         },
-        viewport: 'width=device-width, initial-scale=1',
         robots: {
             index: true,
             follow: true,
@@ -85,29 +90,7 @@ export default async function RootLayout({
             </head>
             <body style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                 {/* Skip to main content link para accesibilidad */}
-                <a
-                    href="#main-content"
-                    className="skip-to-content"
-                    style={{
-                        position: 'absolute',
-                        left: '-9999px',
-                        zIndex: 999,
-                        padding: '1rem',
-                        background: 'var(--accent)',
-                        color: 'white',
-                        textDecoration: 'none',
-                        borderRadius: '4px',
-                    }}
-                    onFocus={(e) => {
-                        e.currentTarget.style.left = '1rem'
-                        e.currentTarget.style.top = '1rem'
-                    }}
-                    onBlur={(e) => {
-                        e.currentTarget.style.left = '-9999px'
-                    }}
-                >
-                    Saltar al contenido principal
-                </a>
+                <SkipToContent />
 
                 <NextIntlClientProvider messages={messages}>
                     <LayoutWrapper>
