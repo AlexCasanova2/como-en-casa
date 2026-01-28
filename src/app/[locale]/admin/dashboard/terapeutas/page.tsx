@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Plus, Trash2, UserPlus, Edit2, X, Save, Mail, Lock, Clock } from 'lucide-react'
 import { createTerapeutaAction } from '@/app/actions/admin'
+import Toast from '@/components/ui/Toast'
 
 export default function TerapeutasPage() {
     const [terapeutas, setTerapeutas] = useState<any[]>([])
@@ -11,6 +12,7 @@ export default function TerapeutasPage() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingTerapeuta, setEditingTerapeuta] = useState<any>(null)
     const [isCreating, setIsCreating] = useState(false)
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null)
 
     // Estados para Horarios (Opción B)
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
@@ -48,8 +50,18 @@ export default function TerapeutasPage() {
     const handleDelete = async (id: string) => {
         if (confirm('¿Estás seguro de eliminar este terapeuta?')) {
             const { error } = await supabase.from('terapeutas').delete().eq('id', id)
-            if (error) alert(error.message)
-            else fetchTerapeutas()
+            if (error) {
+                setToast({
+                    message: `Error al eliminar: ${error.message}`,
+                    type: 'error'
+                })
+            } else {
+                setToast({
+                    message: 'Terapeuta eliminado correctamente',
+                    type: 'success'
+                })
+                fetchTerapeutas()
+            }
         }
     }
 
@@ -89,31 +101,55 @@ export default function TerapeutasPage() {
                     specialties: specialtiesArr
                 })
             } else {
-                // MODO EDICIÓN: Insert/Update normal (solo tabla terapeutas)
+                // MODO EDICIÓN: Update en ambas tablas
                 const specialtiesArr = typeof editingTerapeuta.specialties === 'string'
                     ? editingTerapeuta.specialties.split(',').map((s: string) => s.trim()).filter(Boolean)
                     : editingTerapeuta.specialties
 
-                const { error } = await supabase
+                // 1. Actualizar tabla terapeutas
+                const { error: terapeutaError } = await supabase
                     .from('terapeutas')
-                    .upsert({
-                        id: editingTerapeuta.id,
+                    .update({
                         bio: editingTerapeuta.bio,
                         specialties: specialtiesArr,
                         experience_years: editingTerapeuta.experience_years,
                         is_active: editingTerapeuta.is_active
                     })
+                    .eq('id', editingTerapeuta.id)
 
-                if (error) throw error
+                if (terapeutaError) {
+                    console.error('Error updating terapeuta:', terapeutaError)
+                    throw new Error(`Error al actualizar datos del terapeuta: ${terapeutaError.message}`)
+                }
 
-                // Actualizar nombre en profiles si ha cambiado
-                await supabase.from('profiles').update({ full_name: editingTerapeuta.full_name }).eq('id', editingTerapeuta.id)
+                // 2. Actualizar nombre en profiles
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .update({
+                        full_name: editingTerapeuta.full_name
+                    })
+                    .eq('id', editingTerapeuta.id)
+
+                if (profileError) {
+                    console.error('Error updating profile:', profileError)
+                    throw new Error(`Error al actualizar nombre: ${profileError.message}`)
+                }
+
+                console.log('✅ Terapeuta actualizado correctamente')
             }
 
             setIsModalOpen(false)
-            fetchTerapeutas()
+            setToast({
+                message: editingTerapeuta.id ? 'Terapeuta actualizado correctamente' : 'Terapeuta creado correctamente',
+                type: 'success'
+            })
+            await fetchTerapeutas()
         } catch (error: any) {
-            alert('Error: ' + error.message)
+            console.error('Error en handleSave:', error)
+            setToast({
+                message: error.message || 'Error al guardar los cambios',
+                type: 'error'
+            })
         } finally {
             setIsCreating(false)
         }
@@ -171,10 +207,16 @@ export default function TerapeutasPage() {
                 if (error) throw error
             }
 
-            alert('Horario guardado correctamente')
+            setToast({
+                message: 'Horario guardado correctamente',
+                type: 'success'
+            })
             setIsScheduleModalOpen(false)
         } catch (error: any) {
-            alert('Error: ' + error.message)
+            setToast({
+                message: `Error al guardar horario: ${error.message}`,
+                type: 'error'
+            })
         } finally {
             setIsSavingSchedule(false)
         }
@@ -391,6 +433,15 @@ export default function TerapeutasPage() {
                         </button>
                     </div>
                 </div>
+            )}
+
+            {/* Toast Notifications */}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
             )}
         </div>
     )
