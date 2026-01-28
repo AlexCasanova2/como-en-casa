@@ -60,3 +60,40 @@ export async function createTerapeutaAction(formData: any) {
 
     return { success: true, userId: newUser.user.id }
 }
+
+export async function updateTerapeutaAction(formData: any) {
+    const supabase = createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // 1. Verificar que quien llama es ADMIN
+    if (!user) throw new Error('No autorizado')
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    if (profile?.role !== 'admin') throw new Error('No tienes permisos suficientes')
+
+    const adminClient = getAdminClient()
+
+    // 2. Actualizar tabla terapeutas
+    const { error: terapeutaError } = await adminClient
+        .from('terapeutas')
+        .update({
+            bio: formData.bio,
+            experience_years: formData.experience_years,
+            specialties: formData.specialties,
+            is_active: formData.is_active
+        })
+        .eq('id', formData.id)
+
+    if (terapeutaError) throw new Error(terapeutaError.message)
+
+    // 3. Actualizar nombre en tabla profiles
+    const { error: profileError } = await adminClient
+        .from('profiles')
+        .update({
+            full_name: formData.full_name
+        })
+        .eq('id', formData.id)
+
+    if (profileError) throw new Error(profileError.message)
+
+    return { success: true }
+}

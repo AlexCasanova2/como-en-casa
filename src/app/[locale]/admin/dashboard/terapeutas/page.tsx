@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Plus, Trash2, UserPlus, Edit2, X, Save, Mail, Lock, Clock } from 'lucide-react'
-import { createTerapeutaAction } from '@/app/actions/admin'
+import { createTerapeutaAction, updateTerapeutaAction } from '@/app/actions/admin'
 import Toast from '@/components/ui/Toast'
 
 export default function TerapeutasPage() {
@@ -90,52 +90,23 @@ export default function TerapeutasPage() {
         setIsCreating(true)
 
         try {
+            const specialtiesArr = typeof editingTerapeuta.specialties === 'string'
+                ? editingTerapeuta.specialties.split(',').map((s: string) => s.trim()).filter(Boolean)
+                : editingTerapeuta.specialties
+
             if (!editingTerapeuta.id) {
                 // MODO CREACIÓN: Usamos la Server Action
-                const specialtiesArr = typeof editingTerapeuta.specialties === 'string'
-                    ? editingTerapeuta.specialties.split(',').map((s: string) => s.trim()).filter(Boolean)
-                    : editingTerapeuta.specialties
-
                 await createTerapeutaAction({
                     ...editingTerapeuta,
                     specialties: specialtiesArr
                 })
             } else {
-                // MODO EDICIÓN: Update en ambas tablas
-                const specialtiesArr = typeof editingTerapeuta.specialties === 'string'
-                    ? editingTerapeuta.specialties.split(',').map((s: string) => s.trim()).filter(Boolean)
-                    : editingTerapeuta.specialties
-
-                // 1. Actualizar tabla terapeutas
-                const { error: terapeutaError } = await supabase
-                    .from('terapeutas')
-                    .update({
-                        bio: editingTerapeuta.bio,
-                        specialties: specialtiesArr,
-                        experience_years: editingTerapeuta.experience_years,
-                        is_active: editingTerapeuta.is_active
-                    })
-                    .eq('id', editingTerapeuta.id)
-
-                if (terapeutaError) {
-                    console.error('Error updating terapeuta:', terapeutaError)
-                    throw new Error(`Error al actualizar datos del terapeuta: ${terapeutaError.message}`)
-                }
-
-                // 2. Actualizar nombre en profiles
-                const { error: profileError } = await supabase
-                    .from('profiles')
-                    .update({
-                        full_name: editingTerapeuta.full_name
-                    })
-                    .eq('id', editingTerapeuta.id)
-
-                if (profileError) {
-                    console.error('Error updating profile:', profileError)
-                    throw new Error(`Error al actualizar nombre: ${profileError.message}`)
-                }
-
-                console.log('✅ Terapeuta actualizado correctamente')
+                // MODO EDICIÓN: Usamos la Server Action para saltar RLS en profiles
+                await updateTerapeutaAction({
+                    ...editingTerapeuta,
+                    specialties: specialtiesArr
+                })
+                console.log('✅ Terapeuta actualizado correctamente vía Server Action')
             }
 
             setIsModalOpen(false)
