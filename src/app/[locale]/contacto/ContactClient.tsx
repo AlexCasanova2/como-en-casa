@@ -3,14 +3,86 @@
 
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
-import { ChevronDown, Mail, Instagram, Send } from 'lucide-react'
+import { ChevronDown, Mail, Instagram, Send, CheckCircle } from 'lucide-react'
 
 export default function ContactClient() {
     const t = useTranslations('Contact')
     const f = useTranslations('FAQ')
     const [openIndex, setOpenIndex] = useState<number | null>(0)
 
+    // Form state
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    })
+    const [errors, setErrors] = useState<Record<string, string>>({})
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [submitSuccess, setSubmitSuccess] = useState(false)
+
     const faqItems = [0, 1, 2, 3]
+
+    const validateForm = () => {
+        const newErrors: Record<string, string> = {}
+
+        if (!formData.name.trim()) {
+            newErrors.name = 'El nombre es obligatorio'
+        }
+
+        if (!formData.email.trim()) {
+            newErrors.email = 'El email es obligatorio'
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = 'Email inválido'
+        }
+
+        if (!formData.subject.trim()) {
+            newErrors.subject = 'El asunto es obligatorio'
+        }
+
+        if (!formData.message.trim()) {
+            newErrors.message = 'El mensaje es obligatorio'
+        } else if (formData.message.trim().length < 10) {
+            newErrors.message = 'El mensaje debe tener al menos 10 caracteres'
+        }
+
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        if (!validateForm()) {
+            return
+        }
+
+        setIsSubmitting(true)
+
+        // Simulate API call
+        setTimeout(() => {
+            setIsSubmitting(false)
+            setSubmitSuccess(true)
+            setFormData({ name: '', email: '', subject: '', message: '' })
+
+            // Reset success message after 5 seconds
+            setTimeout(() => {
+                setSubmitSuccess(false)
+            }, 5000)
+        }, 1500)
+    }
+
+    const handleChange = (field: string, value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value }))
+        // Clear error when user starts typing
+        if (errors[field]) {
+            setErrors(prev => {
+                const newErrors = { ...prev }
+                delete newErrors[field]
+                return newErrors
+            })
+        }
+    }
 
     return (
         <>
@@ -104,27 +176,118 @@ export default function ContactClient() {
 
                     {/* FORM COLUMN */}
                     <div id="contact-form-container">
-                        <form id="contact-form" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        {submitSuccess && (
+                            <div style={{
+                                background: 'rgba(34, 197, 94, 0.1)',
+                                border: '2px solid rgba(34, 197, 94, 0.5)',
+                                borderRadius: '16px',
+                                padding: '1.5rem',
+                                marginBottom: '2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                animation: 'fadeInUp 0.5s ease'
+                            }}>
+                                <CheckCircle color="#22c55e" size={24} />
+                                <div>
+                                    <strong style={{ color: '#22c55e', display: 'block', marginBottom: '0.25rem' }}>¡Mensaje enviado!</strong>
+                                    <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Te responderemos pronto.</span>
+                                </div>
+                            </div>
+                        )}
+
+                        <form id="contact-form" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                     <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>{t('formName')}</label>
-                                    <input type="text" placeholder="Tu nombre" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1rem', color: 'white', outline: 'none' }} />
+                                    <input
+                                        type="text"
+                                        placeholder="Tu nombre"
+                                        value={formData.name}
+                                        onChange={(e) => handleChange('name', e.target.value)}
+                                        style={{
+                                            background: 'rgba(255,255,255,0.05)',
+                                            border: errors.name ? '2px solid #ef4444' : '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '12px',
+                                            padding: '1rem',
+                                            color: 'white',
+                                            outline: 'none',
+                                            transition: 'border 0.3s ease'
+                                        }}
+                                    />
+                                    {errors.name && <span style={{ color: '#ef4444', fontSize: '0.85rem' }}>{errors.name}</span>}
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                     <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>{t('formEmail')}</label>
-                                    <input type="email" placeholder="tu@email.com" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1rem', color: 'white', outline: 'none' }} />
+                                    <input
+                                        type="email"
+                                        placeholder="tu@email.com"
+                                        value={formData.email}
+                                        onChange={(e) => handleChange('email', e.target.value)}
+                                        style={{
+                                            background: 'rgba(255,255,255,0.05)',
+                                            border: errors.email ? '2px solid #ef4444' : '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '12px',
+                                            padding: '1rem',
+                                            color: 'white',
+                                            outline: 'none',
+                                            transition: 'border 0.3s ease'
+                                        }}
+                                    />
+                                    {errors.email && <span style={{ color: '#ef4444', fontSize: '0.85rem' }}>{errors.email}</span>}
                                 </div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>{t('formSubject')}</label>
-                                <input type="text" placeholder="¿Cómo podemos ayudarte?" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1rem', color: 'white', outline: 'none' }} />
+                                <input
+                                    type="text"
+                                    placeholder="¿Cómo podemos ayudarte?"
+                                    value={formData.subject}
+                                    onChange={(e) => handleChange('subject', e.target.value)}
+                                    style={{
+                                        background: 'rgba(255,255,255,0.05)',
+                                        border: errors.subject ? '2px solid #ef4444' : '1px solid rgba(255,255,255,0.1)',
+                                        borderRadius: '12px',
+                                        padding: '1rem',
+                                        color: 'white',
+                                        outline: 'none',
+                                        transition: 'border 0.3s ease'
+                                    }}
+                                />
+                                {errors.subject && <span style={{ color: '#ef4444', fontSize: '0.85rem' }}>{errors.subject}</span>}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                 <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>{t('formMessage')}</label>
-                                <textarea rows={6} placeholder="Escribe aquí tu mensaje..." style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1rem', color: 'white', outline: 'none', resize: 'none' }}></textarea>
+                                <textarea
+                                    rows={6}
+                                    placeholder="Escribe aquí tu mensaje..."
+                                    value={formData.message}
+                                    onChange={(e) => handleChange('message', e.target.value)}
+                                    style={{
+                                        background: 'rgba(255,255,255,0.05)',
+                                        border: errors.message ? '2px solid #ef4444' : '1px solid rgba(255,255,255,0.1)',
+                                        borderRadius: '12px',
+                                        padding: '1rem',
+                                        color: 'white',
+                                        outline: 'none',
+                                        resize: 'none',
+                                        transition: 'border 0.3s ease'
+                                    }}
+                                />
+                                {errors.message && <span style={{ color: '#ef4444', fontSize: '0.85rem' }}>{errors.message}</span>}
                             </div>
-                            <button type="button" className="glass-button" style={{ marginTop: '1rem', width: 'fit-content' }}>
-                                {t('formSubmit')} <Send size={18} />
+                            <button
+                                type="submit"
+                                className="glass-button"
+                                disabled={isSubmitting}
+                                style={{
+                                    marginTop: '1rem',
+                                    width: 'fit-content',
+                                    opacity: isSubmitting ? 0.6 : 1,
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                                }}
+                            >
+                                {isSubmitting ? 'Enviando...' : t('formSubmit')} {!isSubmitting && <Send size={18} />}
                             </button>
                         </form>
                     </div>

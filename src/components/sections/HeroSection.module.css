@@ -1,0 +1,57 @@
+.subtitle {
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+    max-width: 650px;
+    line-height: 1.7;
+}
+
+.actions {
+    margin-top: 3.5rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.secondaryCta {
+    padding: 1rem 2.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-soft);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.badges {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 5rem;
+    font-size: 0.95rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .actions {
+        margin-top: 2.5rem;
+        gap: 1rem;
+    }
+
+    .badges {
+        gap: 1.5rem;
+        margin-top: 3rem;
+        font-size: 0.9rem;
+    }
+
+    .secondaryCta {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+    }
+}

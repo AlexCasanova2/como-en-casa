@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl';
+import Toast from './Toast'
 
 export default function PricingSection() {
     const t = useTranslations('Pricing');
     const [loading, setLoading] = useState<string | null>(null)
     const [userTimezone, setUserTimezone] = useState<string>('')
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null)
 
     useEffect(() => {
         setUserTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone)
@@ -25,7 +27,10 @@ export default function PricingSection() {
             window.location.href = url
         } catch (err) {
             console.error(err)
-            alert('Error processing payment.')
+            setToast({
+                message: 'Error al procesar el pago. Por favor, inténtalo de nuevo.',
+                type: 'error'
+            })
         } finally {
             setLoading(null)
         }
@@ -35,7 +40,13 @@ export default function PricingSection() {
         <section className="section" id="pricing" style={{ padding: '10rem 10%', background: 'rgba(255,255,255,0.02)' }}>
             <h2 className="text-glow" style={{ fontSize: '3rem', marginBottom: '1.5rem', color: 'var(--foreground)', textAlign: 'center', fontWeight: 900 }}>{t('title')}</h2>
             <p className="text-soft" style={{ marginBottom: '4rem', fontSize: '1rem', textAlign: 'center', maxWidth: '600px', marginInline: 'auto' }}>
-                {t('timezoneNotice')} <strong style={{ color: 'var(--accent)' }}>{userTimezone || '...'}</strong>
+                {t('timezoneNotice')} <strong style={{
+                    color: 'var(--accent)',
+                    background: 'rgba(0, 0, 0, 0.3)',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '8px',
+                    display: 'inline-block'
+                }}>{userTimezone || '...'}</strong>
             </p>
 
             <div style={{ display: 'flex', gap: '2.5rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '1100px' }}>
@@ -77,6 +88,14 @@ export default function PricingSection() {
                 </div>
 
             </div>
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
         </section>
     )
 }
