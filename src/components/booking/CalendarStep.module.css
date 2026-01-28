@@ -1,0 +1,200 @@
+.step {
+    padding-top: 1rem;
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    padding: 0;
+}
+
+.backBtn:hover {
+    color: #d4a373;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 1.75rem;
+    color: #4a3f35;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+.calendarLayout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.calendarCard {
+    background: #f8fafc;
+    border-radius: 24px;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.monthHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.monthName {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #4a3f35;
+    text-transform: capitalize;
+}
+
+.navBtn {
+    background: white;
+    border: 1px solid #e2e8f0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.navBtn:hover {
+    border-color: #d4a373;
+    color: #d4a373;
+}
+
+.weekDays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 0.5rem;
+}
+
+.weekDay {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.daysGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.dayCell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #cbd5e1;
+    cursor: default;
+    font-size: 0.95rem;
+}
+
+.available {
+    color: #4a3f35;
+    cursor: pointer;
+}
+
+.available:hover {
+    background: #fdf6e3;
+    color: #d4a373;
+}
+
+.selected {
+    background: #4a3f35 !important;
+    color: white !important;
+}
+
+.emptyDay {
+    aspect-ratio: 1;
+}
+
+.slotsCard {
+    background: white;
+    border-radius: 24px;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+    min-height: 400px;
+}
+
+.slotsTitle {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #4a3f35;
+    margin-bottom: 1.5rem;
+    text-transform: capitalize;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+}
+
+.slotsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.75rem;
+}
+
+.slotBtn {
+    padding: 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 700;
+    color: #4a3f35;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.slotBtn:hover {
+    background: #d4a373;
+    border-color: #d4a373;
+    color: white;
+}
+
+.noSlots {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #94a3b8;
+    grid-column: 1 / -1;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .calendarLayout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.loading {
+    padding: 4rem;
+    text-align: center;
+    color: #64748b;
+}

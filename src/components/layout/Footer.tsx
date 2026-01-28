@@ -36,7 +36,7 @@ export default function Footer() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             <span style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.8rem', letterSpacing: '0.1em', opacity: 0.4 }}>MENU</span>
                             <Link href="/conocenos" style={{ opacity: 0.8, fontSize: '0.9rem' }}>{n('about')}</Link>
-                            <Link href="/#pricing" style={{ opacity: 0.8, fontSize: '0.9rem' }}>{n('appointment')}</Link>
+                            <Link href="/reservar" style={{ opacity: 0.8, fontSize: '0.9rem' }}>{n('appointment')}</Link>
                             <Link href="/blog" style={{ opacity: 0.8, fontSize: '0.9rem' }}>{n('blog')}</Link>
                             <Link href="/contacto" style={{ opacity: 0.8, fontSize: '0.9rem' }}>{n('contact')}</Link>
                         </div>

@@ -2,11 +2,13 @@
 
 import { ArrowRight, Globe, Compass, Languages } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import styles from './HeroSection.module.css'
 
 export default function HeroSection() {
     const t = useTranslations('Index')
     const f = useTranslations('Features')
+    const router = useRouter()
 
     const scrollToSection = (sectionId: string) => {
         document.getElementById(sectionId)?.scrollIntoView({
@@ -28,7 +30,7 @@ export default function HeroSection() {
                 <button
                     id="cta-primary"
                     className="glass-button"
-                    onClick={() => scrollToSection('pricing')}
+                    onClick={() => router.push('/reservar')}
                     aria-label={t('cta')}
                 >
                     {t('cta')} <ArrowRight size={20} />

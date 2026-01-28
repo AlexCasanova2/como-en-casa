@@ -37,30 +37,36 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
 
                 <nav id="sidebar-nav" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.path}
-                            href={item.path}
-                            id={`nav-item-${item.name.toLowerCase()}`}
-                            className={pathname?.includes(item.path) ? 'glass' : ''}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.75rem',
-                                padding: '0.75rem 1rem',
-                                borderRadius: '12px',
-                                color: pathname?.includes(item.path) ? '#d4a373' : '#666',
-                                fontWeight: pathname?.includes(item.path) ? 600 : 400,
-                                textDecoration: 'none'
-                            }}
-                        >
-                            {item.icon} {item.name}
-                        </Link>
-                    ))}
+                    {navItems.map((item) => {
+                        const isActive = item.path === '/admin/dashboard'
+                            ? pathname?.endsWith('/admin/dashboard')
+                            : pathname?.includes(item.path);
+
+                        return (
+                            <Link
+                                key={item.path}
+                                href={item.path}
+                                id={`nav-item-${item.name.toLowerCase()}`}
+                                className={isActive ? 'glass' : ''}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.75rem',
+                                    padding: '0.75rem 1rem',
+                                    borderRadius: '12px',
+                                    color: isActive ? '#d4a373' : '#666',
+                                    fontWeight: isActive ? 600 : 400,
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                {item.icon} {item.name}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 <div id="sidebar-footer" style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <Link id="view-web-link" href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#666', fontSize: '0.9rem' }}>
+                    <Link id="view-web-link" href="/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#666', fontSize: '0.9rem' }}>
                         <Home size={18} /> Ver web
                     </Link>
                     <button

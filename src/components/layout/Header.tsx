@@ -2,12 +2,23 @@
 
 import { Link } from '@/i18n/routing'
 import { useTranslations } from 'next-intl'
-import { Instagram, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { Instagram, Menu, X, Settings } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 export default function Header() {
     const t = useTranslations('Navigation')
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [user, setUser] = useState<any>(null)
+    const supabase = createClient()
+
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            setUser(user)
+        }
+        getUser()
+    }, [])
 
     return (
         <>
@@ -37,7 +48,7 @@ export default function Header() {
                         <Link id="nav-conocenos" href="/conocenos" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
                             {t('about')}
                         </Link>
-                        <Link id="nav-cita" href="/#pricing" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
+                        <Link id="nav-cita" href="/reservar" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
                             {t('appointment')}
                         </Link>
                         <Link id="nav-blog" href="/blog" className="hover-lift" style={{ fontSize: '0.95rem', fontWeight: 500, color: 'white', transition: 'all 0.3s' }}>
@@ -56,6 +67,17 @@ export default function Header() {
                         <div id="header-divider" style={{ height: '20px', width: '1px', background: 'rgba(255,255,255,0.2)' }} />
                         <Link id="lang-es" href="/" locale="es" style={{ fontSize: '0.85rem', color: 'white', opacity: 0.8 }}>ES</Link>
                         <Link id="lang-en" href="/" locale="en" style={{ fontSize: '0.85rem', color: 'white', opacity: 0.8 }}>EN</Link>
+                        {user && (
+                            <Link
+                                id="admin-icon-link"
+                                href="/admin/dashboard"
+                                className="hover-lift"
+                                style={{ color: 'white', display: 'flex', alignItems: 'center' }}
+                                title="Panel de Administración"
+                            >
+                                <Settings size={20} />
+                            </Link>
+                        )}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -111,7 +133,7 @@ export default function Header() {
                         {t('about')}
                     </Link>
                     <Link
-                        href="/#pricing"
+                        href="/reservar"
                         onClick={() => setMobileMenuOpen(false)}
                         style={{ fontSize: '1.5rem', fontWeight: 600, color: 'white' }}
                     >
@@ -140,6 +162,15 @@ export default function Header() {
                     <div style={{ height: '30px', width: '1px', background: 'rgba(255,255,255,0.3)' }} />
                     <Link href="/" locale="es" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem', color: 'white' }}>ES</Link>
                     <Link href="/" locale="en" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1.2rem', color: 'white' }}>EN</Link>
+                    {user && (
+                        <Link
+                            href="/admin/dashboard"
+                            onClick={() => setMobileMenuOpen(false)}
+                            style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                        >
+                            <Settings size={24} /> Admin
+                        </Link>
+                    )}
                 </div>
             </div>
 

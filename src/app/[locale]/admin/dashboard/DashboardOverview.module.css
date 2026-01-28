@@ -1,0 +1,291 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.welcomeSection h2 {
+    font-size: 1.5rem;
+    color: #4a4a4a;
+    margin-bottom: 0.5rem;
+}
+
+.welcomeSection p {
+    color: #999;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.recentBookingsCard {
+    padding: 2rem;
+    border-radius: 24px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.cardHeader h3 {
+    font-size: 1.2rem;
+    color: #4a4a4a;
+    font-weight: 700;
+}
+
+.viewAllLink {
+    color: #d4a373;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tableScroll {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.th {
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1rem 0.5rem;
+    color: #999;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.bookingRow {
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.tdName {
+    padding: 1.25rem 0.5rem;
+    color: #4a3f35;
+    font-weight: 600;
+}
+
+.tdText {
+    padding: 1.25rem 0.5rem;
+    color: #666;
+}
+
+.statusBadge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.paid {
+    background: #e9f7ef;
+    color: #27ae60;
+}
+
+.pending {
+    background: #fef9e7;
+    color: #f1c40f;
+}
+
+.tdDate {
+    padding: 1.25rem 0.5rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.videoBtn {
+    background: #4a3f35;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: background 0.2s;
+}
+
+.videoBtn:hover {
+    background: #2d261f;
+}
+
+.emptyState {
+    padding: 3rem;
+    text-align: center;
+    color: #999;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tipCard {
+    padding: 1.5rem;
+    border-radius: 24px;
+    background: #4a3f35;
+    color: white;
+}
+
+.tipCard h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.tipCard p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+.appointmentsCard {
+    padding: 1.5rem;
+    border-radius: 24px;
+    background: white;
+    border: 1px solid #eee;
+}
+
+.appointmentsCard h4 {
+    font-size: 1rem;
+    color: #4a4a4a;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+}
+
+.appointmentsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.appointmentItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 15px;
+    background: #fdf6e3;
+    border: 1px solid #ede0d4;
+}
+
+.appointmentTime {
+    text-align: center;
+    min-width: 45px;
+    border-right: 1px solid #ede0d4;
+    padding-right: 0.75rem;
+}
+
+.timeText {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #d4a373;
+    display: block;
+}
+
+.patientName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a3f35;
+    display: block;
+}
+
+.appointmentType {
+    font-size: 0.7rem;
+    color: #999;
+}
+
+/* StatCard Styles */
+.statCard {
+    padding: 1.75rem;
+    border-radius: 24px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f0f0f0;
+}
+
+.statTitle {
+    color: #999;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.statValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #4a3f35;
+}
+
+.statTrend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.trendPositive {
+    color: #27ae60;
+}
+
+.trendNegative {
+    color: #e74c3c;
+}
+
+.trendValue {
+    font-weight: 700;
+}
+
+.trendLabel {
+    color: #ccc;
+    font-weight: 400;
+    margin-left: 0.25rem;
+}
+
+.statIconWrapper {
+    padding: 0.75rem;
+    border-radius: 15px;
+    background: #f8f9fa;
+}
+
+.loadingWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    color: #666;
+}
+
+.loadingText {
+    margin-left: 1rem;
+}

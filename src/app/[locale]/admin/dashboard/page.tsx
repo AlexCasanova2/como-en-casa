@@ -2,18 +2,24 @@
 
 import { useEffect, useState } from 'react'
 import { getDashboardOverviewAction } from '@/app/actions/admin'
-import { Users, CreditCard, Calendar, Activity, ArrowUpRight, ArrowDownRight, User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Users, CreditCard, Calendar, Activity, ArrowUpRight, ArrowDownRight, User, Video } from 'lucide-react'
 import Link from 'next/link'
+import styles from './DashboardOverview.module.css'
 
 export default function DashboardOverviewPage() {
     const [data, setData] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [isAdmin, setIsAdmin] = useState(false)
+    const [fixStatus, setFixStatus] = useState<string | null>(null)
+    const router = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const res = await getDashboardOverviewAction()
                 setData(res)
+                setIsAdmin(res.isAdmin)
             } catch (error) {
                 console.error('Error fetching dashboard data:', error)
             } finally {
@@ -23,31 +29,44 @@ export default function DashboardOverviewPage() {
         fetchData()
     }, [])
 
+    const handleFixRoles = async () => {
+        try {
+            setFixStatus('Reparando...')
+            const { fixExistingTherapistRolesAction } = await import('@/app/actions/admin')
+            const result = await fixExistingTherapistRolesAction()
+            setFixStatus(`¡Listo! Se corrigieron ${result.count} cuentas.`)
+            setTimeout(() => setFixStatus(null), 5000)
+        } catch (error) {
+            setFixStatus('Error al reparar')
+        }
+    }
+
+    const handleJoinRoom = (booking: any) => {
+        router.push(`/dashboard/sesion/${booking.id}`)
+    }
+
     if (loading) return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', color: '#666' }}>
-            <Activity className="animate-spin" size={32} />
-            <span style={{ marginLeft: '1rem' }}>Cargando resumen...</span>
+        <div className={styles.loadingWrapper}>
+            <p className={styles.loading}>Cargando resumen...</p>
         </div>
     )
 
-    if (!data) return <div>Error al cargar el dashboard</div>
+    if (!data) return <div className={styles.emptyState}>Error al cargar el dashboard</div>
 
-    const { stats, recentBookings, isAdmin, userName } = data
+    const { stats, recentBookings, userName } = data
 
     return (
-        <div id="dashboard-overview" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+        <div className={styles.pageContainer}>
             {/* Bienvenida */}
-            <div id="welcome-section">
-                <h2 style={{ fontSize: '1.5rem', color: '#4a4a4a', marginBottom: '0.5rem' }}>
-                    ¡Hola, {userName.split(' ')[0]}! 👋
-                </h2>
-                <p style={{ color: '#999' }}>
+            <div className={styles.welcomeSection}>
+                <h2>¡Hola, {userName.split(' ')[0]}! 👋</h2>
+                <p>
                     {isAdmin ? 'Esto es lo que está pasando en la plataforma hoy.' : 'Aquí tienes tus próximas sesiones y actividad reciente.'}
                 </p>
             </div>
 
             {/* Stats Cards */}
-            <div id="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+            <div className={styles.statsGrid}>
                 <StatCard
                     title="Sesiones"
                     value={stats.totalSessions}
@@ -80,72 +99,76 @@ export default function DashboardOverviewPage() {
                 />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+            <div className={styles.mainGrid}>
                 {/* Tabla de Reservas Recientes */}
-                <div className="glass" style={{ padding: '2rem', borderRadius: '24px', background: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <h3 style={{ fontSize: '1.2rem', color: '#4a4a4a', fontWeight: 700 }}>Reservas Recientes</h3>
-                        <Link href="/admin/dashboard/pagos" style={{ color: '#d4a373', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }}>Ver todas</Link>
+                <div className={styles.recentBookingsCard}>
+                    <div className={styles.cardHeader}>
+                        <h3>Reservas Recientes</h3>
+                        <Link href="/admin/dashboard/pagos" className={styles.viewAllLink}>Ver todas</Link>
                     </div>
 
-                    <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <div className={styles.tableScroll}>
+                        <table className={styles.table}>
                             <thead>
-                                <tr style={{ textAlign: 'left', borderBottom: '1px solid #f0f0f0' }}>
-                                    <th style={{ padding: '1rem 0.5rem', color: '#999', fontSize: '0.85rem', fontWeight: 600 }}>CLIENTE</th>
-                                    <th style={{ padding: '1rem 0.5rem', color: '#999', fontSize: '0.85rem', fontWeight: 600 }}>SERVICIO</th>
-                                    {isAdmin && <th style={{ padding: '1rem 0.5rem', color: '#999', fontSize: '0.85rem', fontWeight: 600 }}>TERAPEUTA</th>}
-                                    <th style={{ padding: '1rem 0.5rem', color: '#999', fontSize: '0.85rem', fontWeight: 600 }}>ESTADO</th>
-                                    <th style={{ padding: '1rem 0.5rem', color: '#999', fontSize: '0.85rem', fontWeight: 600 }}>FECHA</th>
+                                <tr>
+                                    <th className={styles.th}>CLIENTE</th>
+                                    <th className={styles.th}>SERVICIO</th>
+                                    {isAdmin && <th className={styles.th}>TERAPEUTA</th>}
+                                    <th className={styles.th}>ESTADO</th>
+                                    <th className={styles.th}>FECHA</th>
+                                    <th className={styles.th}>ACCIONES</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {recentBookings.map((booking: any) => (
-                                    <tr key={booking.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
-                                        <td style={{ padding: '1.25rem 0.5rem', color: '#4a3f35', fontWeight: 600 }}>{booking.profiles?.full_name}</td>
-                                        <td style={{ padding: '1.25rem 0.5rem', color: '#666' }}>{booking.servicios?.name}</td>
+                                    <tr key={booking.id} className={styles.bookingRow}>
+                                        <td className={styles.tdName}>{booking.cliente?.full_name || 'Desconocido'}</td>
+                                        <td className={styles.tdText}>{booking.servicios?.name}</td>
                                         {isAdmin && (
-                                            <td style={{ padding: '1.25rem 0.5rem', color: '#666' }}>
+                                            <td className={styles.tdText}>
                                                 {booking.terapeuta?.profiles?.full_name || 'Asignando...'}
                                             </td>
                                         )}
                                         <td style={{ padding: '1.25rem 0.5rem' }}>
-                                            <span style={{
-                                                padding: '0.25rem 0.75rem',
-                                                borderRadius: '20px',
-                                                fontSize: '0.75rem',
-                                                fontWeight: 600,
-                                                background: booking.status === 'paid' ? '#e9f7ef' : '#fef9e7',
-                                                color: booking.status === 'paid' ? '#27ae60' : '#f1c40f'
-                                            }}>
+                                            <span className={`${styles.statusBadge} ${booking.status === 'paid' ? styles.paid : styles.pending}`}>
                                                 {booking.status === 'paid' ? 'Pagado' : 'Pendiente'}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '1.25rem 0.5rem', color: '#999', fontSize: '0.85rem' }}>
+                                        <td className={styles.tdDate}>
                                             {new Date(booking.created_at).toLocaleDateString()}
+                                        </td>
+                                        <td className={styles.tdText}>
+                                            {booking.status === 'paid' && (
+                                                <button
+                                                    onClick={() => handleJoinRoom(booking)}
+                                                    className={styles.videoBtn}
+                                                >
+                                                    <Video size={14} /> Videollamada
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                         {recentBookings.length === 0 && (
-                            <div style={{ padding: '3rem', textAlign: 'center', color: '#999' }}>No hay reservas recientes.</div>
+                            <div className={styles.emptyState}>No hay reservas recientes.</div>
                         )}
                     </div>
                 </div>
 
                 {/* Info Lateral / Calendario Placeholder */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <div className="glass" style={{ padding: '1.5rem', borderRadius: '24px', background: '#4a3f35', color: 'white' }}>
-                        <h4 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Sugerencia Directiva</h4>
-                        <p style={{ fontSize: '0.9rem', opacity: 0.9, lineHeight: '1.5' }}>
+                <div className={styles.sidebar}>
+                    <div className={styles.tipCard}>
+                        <h4>Sugerencia Directiva</h4>
+                        <p>
                             Hemos notado un aumento del 15% en las búsquedas de "Ansiedad" este mes. Podrías considerar pedir a los terapeutas que añadan este tag a sus especialidades.
                         </p>
                     </div>
 
-                    <div className="glass" style={{ padding: '1.5rem', borderRadius: '24px', background: 'white', border: '1px solid #eee' }}>
-                        <h4 style={{ fontSize: '1rem', color: '#4a4a4a', fontWeight: 700, marginBottom: '1.25rem' }}>Próximas Sesiones</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div className={styles.appointmentsCard}>
+                        <h4>Próximas Sesiones</h4>
+                        <div className={styles.appointmentsList}>
                             <small style={{ color: '#999', fontStyle: 'italic' }}>El sistema de calendario se integrará próximamente con la tabla de citas programadas.</small>
                             <AppointmentItem time="17:00" patient="Marc Ribas" type="Terapia Individual" />
                             <AppointmentItem time="19:30" patient="Elena Gomez" type="Parejas" />
@@ -159,17 +182,17 @@ export default function DashboardOverviewPage() {
 
 function StatCard({ title, value, icon, trend, positive }: any) {
     return (
-        <div className="glass" style={{ padding: '1.75rem', borderRadius: '24px', background: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', border: '1px solid #f0f0f0' }}>
+        <div className={styles.statCard}>
             <div>
-                <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 500 }}>{title}</p>
-                <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#4a3f35' }}>{value}</h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem', fontSize: '0.8rem', color: positive ? '#27ae60' : '#e74c3c' }}>
+                <p className={styles.statTitle}>{title}</p>
+                <h3 className={styles.statValue}>{value}</h3>
+                <div className={`${styles.statTrend} ${positive ? styles.trendPositive : styles.trendNegative}`}>
                     {positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                    <span style={{ fontWeight: 700 }}>{trend}</span>
-                    <span style={{ color: '#ccc', fontWeight: 400, marginLeft: '0.25rem' }}>vs mes pasado</span>
+                    <span className={styles.trendValue}>{trend}</span>
+                    <span className={styles.trendLabel}>vs mes pasado</span>
                 </div>
             </div>
-            <div style={{ padding: '0.75rem', borderRadius: '15px', background: '#f8f9fa' }}>
+            <div className={styles.statIconWrapper}>
                 {icon}
             </div>
         </div>
@@ -178,13 +201,13 @@ function StatCard({ title, value, icon, trend, positive }: any) {
 
 function AppointmentItem({ time, patient, type }: any) {
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', borderRadius: '15px', background: '#fdf6e3', border: '1px solid #ede0d4' }}>
-            <div style={{ textAlign: 'center', minWidth: '45px', borderRight: '1px solid #ede0d4', paddingRight: '0.75rem' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#d4a373', display: 'block' }}>{time}</span>
+        <div className={styles.appointmentItem}>
+            <div className={styles.appointmentTime}>
+                <span className={styles.timeText}>{time}</span>
             </div>
             <div>
-                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#4a3f35', display: 'block' }}>{patient}</span>
-                <span style={{ fontSize: '0.7rem', color: '#999' }}>{type}</span>
+                <span className={styles.patientName}>{patient}</span>
+                <span className={styles.appointmentType}>{type}</span>
             </div>
         </div>
     )

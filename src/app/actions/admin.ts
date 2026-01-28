@@ -22,11 +22,16 @@ export async function createTerapeutaAction(formData: any) {
         email_confirm: true,
         user_metadata: {
             full_name: formData.full_name,
-            role: 'admin' // Como pidió el usuario, le damos rol admin
+            role: 'terapeuta' // Cambiado de admin a terapeuta
         }
     })
 
-    if (authError) throw new Error(authError.message)
+    if (authError || !newUser?.user) {
+        throw new Error(authError?.message || 'Error al crear el usuario en Auth')
+    }
+
+    // 2.1 Forzar rol en la tabla profiles (además del trigger)
+    await adminClient.from('profiles').update({ role: 'terapeuta' }).eq('id', newUser.user.id)
 
     // 3. Crear registro en tabla terapeutas
     // El trigger on_auth_user_created ya habrá creado el perfil en la tabla 'profiles'
@@ -131,11 +136,15 @@ export async function getDashboardOverviewAction() {
     if (!user) throw new Error('No autorizado')
 
     // Obtener perfil del usuario actual
-    const { data: userProfile } = await supabase.from('profiles').select('role, full_name').eq('id', user.id).single()
+    const { data: userProfile, error: profileError } = await supabase.from('profiles').select('role, full_name').eq('id', user.id).single()
 
-    if (!userProfile) throw new Error('Perfil no encontrado')
+    if (profileError || !userProfile) {
+        console.error('CRITICAL: Profile not found for user:', user.id, profileError);
+        throw new Error('Perfil no encontrado');
+    }
 
-    const isAdmin = userProfile.role === 'admin'
+    console.log(`DEBUG: User ${user.id} has role ${userProfile.role}`);
+    const isAdmin = userProfile.role === 'admin';
     const adminClient = createAdminClient()
 
     // 1. Obtener Reservas Recientes
@@ -144,8 +153,8 @@ export async function getDashboardOverviewAction() {
         .select(`
             *,
             servicios(name, price_cents),
-            profiles:user_id(full_name),
-            terapeuta:terapeuta_id(profiles(full_name))
+            cliente:profiles!sesiones_compradas_user_id_fkey(full_name),
+            terapeuta:terapeutas!sesiones_compradas_terapeuta_id_fkey(profiles(full_name))
         `)
         .order('created_at', { ascending: false })
 
@@ -155,8 +164,11 @@ export async function getDashboardOverviewAction() {
 
     const { data: bookings, error: bookingsError } = await bookingsQuery.limit(5)
 
-    // 2. Estadísticas
-    // Si es admin, total revenue de todas las sesiones pagadas
+    if (bookingsError) {
+        console.error('Error fetching dashboard bookings:', bookingsError);
+    }
+
+    console.log(`Found ${bookings?.length || 0} bookings for user ${user.id} (isAdmin: ${isAdmin})`);
     let totalRevenue = 0
     let totalSessions = 0
 
@@ -191,7 +203,41 @@ export async function getDashboardOverviewAction() {
         stats: {
             totalRevenue: totalRevenue / 100,
             totalSessions,
-            totalTherapists: therapistsCount || 0
+            totalTherapists: therapistsCount || 0,
+            debugSessionsCount: bookings?.length || 0
         }
     }
+}
+
+/**
+ * Acción de utilidad para corregir terapeutas que tengan rol 'paciente' por error.
+ * Busca a todos los usuarios en la tabla 'terapeutas' y actualiza su rol en 'profiles'.
+ */
+export async function fixExistingTherapistRolesAction() {
+    const supabase = createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // Solo un ADMIN real puede ejecutar este fix
+    if (!user) throw new Error('No autorizado')
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    if (profile?.role !== 'admin') throw new Error('Solo el administrador principal puede ejecutar esta corrección')
+
+    const adminClient = createAdminClient()
+
+    // 1. Obtener todos los IDs de la tabla terapeutas
+    const { data: therapists } = await adminClient.from('terapeutas').select('id')
+
+    if (!therapists || therapists.length === 0) return { success: true, count: 0 }
+
+    const ids = therapists.map(t => t.id)
+
+    // 2. Actualizar todos esos IDs a rol 'terapeuta' en la tabla profiles
+    const { error: updateError } = await adminClient
+        .from('profiles')
+        .update({ role: 'terapeuta' })
+        .in('id', ids)
+
+    if (updateError) throw new Error(updateError.message)
+
+    return { success: true, count: ids.length }
 }

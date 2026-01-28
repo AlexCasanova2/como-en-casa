@@ -7,6 +7,7 @@ import { routing } from '@/i18n/routing';
 import { Inter, Outfit } from 'next/font/google'
 import LayoutWrapper from '@/components/layout/LayoutWrapper'
 import SkipToContent from '@/components/ui/SkipToContent'
+import JsonLd from '@/components/seo/JsonLd'
 
 const inter = Inter({
     subsets: ['latin'],
@@ -91,6 +92,7 @@ export default async function RootLayout({
             <body style={{ fontFamily: 'var(--font-inter), sans-serif' }}>
                 {/* Skip to main content link para accesibilidad */}
                 <SkipToContent />
+                <JsonLd />
 
                 <NextIntlClientProvider messages={messages}>
                     <LayoutWrapper>

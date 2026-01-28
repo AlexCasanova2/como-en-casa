@@ -36,7 +36,7 @@ CREATE TABLE servicios (
 -- 5. TABLA DE SESIONES COMPRADAS
 CREATE TABLE sesiones_compradas (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) NOT NULL,
+  user_id UUID REFERENCES profiles(id) NOT NULL,
   service_id UUID REFERENCES servicios(id) NOT NULL,
   terapeuta_id UUID REFERENCES terapeutas(id),
   stripe_session_id TEXT UNIQUE,
@@ -44,13 +44,24 @@ CREATE TABLE sesiones_compradas (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 6. SEGURIDAD (RLS)
+-- 6. TABLA DE DISPONIBILIDAD SEMANAL
+CREATE TABLE disponibilidad_semanal (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  terapeuta_id UUID REFERENCES terapeutas(id) ON DELETE CASCADE NOT NULL,
+  dia_semana INTEGER NOT NULL CHECK (dia_semana >= 0 AND dia_semana <= 6),
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 7. SEGURIDAD (RLS)
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE terapeutas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE servicios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sesiones_compradas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE disponibilidad_semanal ENABLE ROW LEVEL SECURITY;
 
--- 7. DISPARADORES (TRIGGERS) PARA PERFILES
+-- 8. DISPARADORES (TRIGGERS) PARA PERFILES
 -- Función para crear perfil automáticamente al registrarse
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -90,5 +101,32 @@ CREATE POLICY "Solo admins gestionan servicios" ON servicios FOR ALL USING (
 -- Políticas para Sesiones Compradas
 CREATE POLICY "Usuarios ven sus propias compras" ON sesiones_compradas FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Admins ven todas las compras" ON sesiones_compradas FOR SELECT USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- Políticas para Disponibilidad Semanal
+CREATE POLICY "Disponibilidad visible por todos" ON disponibilidad_semanal FOR SELECT USING (true);
+CREATE POLICY "Solo admins gestionan disponibilidad" ON disponibilidad_semanal FOR ALL USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- 9. TABLA DE CITAS (Agendas)
+CREATE TABLE citas (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) NOT NULL,
+  terapeuta_id UUID REFERENCES terapeutas(id) NOT NULL,
+  servicio_id UUID REFERENCES servicios(id) NOT NULL,
+  fecha_inicio TIMESTAMP WITH TIME ZONE NOT NULL,
+  fecha_fin TIMESTAMP WITH TIME ZONE NOT NULL,
+  status session_status DEFAULT 'pending' NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE citas ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para Citas
+CREATE POLICY "Usuarios ven sus propias citas" ON citas FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Terapeutas ven sus propias citas" ON citas FOR SELECT USING (auth.uid() = terapeuta_id);
+CREATE POLICY "Admins ven todas las citas" ON citas FOR SELECT USING (
   EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
 );

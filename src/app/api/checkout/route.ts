@@ -20,47 +20,68 @@ const SESSIONS = {
 
 export async function POST(req: NextRequest) {
     try {
-        const { type } = await req.json();
+        const body = await req.json();
+        console.log('Checkout request body:', body);
+        const { type, bookingMetadata } = body;
         const supabase = createClient();
 
-        // Obtener usuario autenticado si existe
-        const { data: { user } } = await supabase.auth.getUser();
+        // 1. Obtener detalles del servicio desde la base de datos
+        console.log('Fetching service with ID:', type);
+        const { data: service, error: serviceError } = await supabase
+            .from('servicios')
+            .select('*')
+            .eq('id', type)
+            .single();
 
-        const selectedSession = SESSIONS[type as keyof typeof SESSIONS];
-
-        if (!selectedSession) {
-            return NextResponse.json({ error: 'Tipo de sesión no válido' }, { status: 400 });
+        if (serviceError || !service) {
+            console.error('Service not found or error:', serviceError);
+            return NextResponse.json({ error: 'Servicio no encontrado en la base de datos' }, { status: 404 });
         }
 
-        // Creamos la sesión de Checkout de Stripe
+        console.log('Service found:', service.name);
+
+        // 2. Obtener usuario autenticado si existe
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log('Authenticated user:', user?.id || 'none');
+
+        // 3. Creamos la sesión de Checkout de Stripe
+        console.log('Creating Stripe session...');
         const session = await stripeServer.checkout.sessions.create({
             payment_method_types: ['card'],
-            customer_email: user?.email, // Pre-rellenar email si está logueado
+            customer_email: user?.email || bookingMetadata?.email,
             line_items: [
                 {
                     price_data: {
                         currency: 'eur',
                         product_data: {
-                            name: selectedSession.name,
-                            description: selectedSession.description,
+                            name: service.name,
+                            description: service.description || undefined,
                         },
-                        unit_amount: selectedSession.price,
+                        unit_amount: service.price_cents,
                     },
                     quantity: 1,
                 },
             ],
             mode: 'payment',
             success_url: `${req.nextUrl.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${req.nextUrl.origin}/`,
+            cancel_url: `${req.nextUrl.origin}/reservar`,
             metadata: {
-                session_type: type,
-                user_id: user?.id || 'anonymous', // Guardamos el ID del usuario
+                service_id: type,
+                user_id: user?.id || 'anonymous',
+                booking_date: bookingMetadata?.date,
+                booking_time: bookingMetadata?.time,
+                therapist_id: bookingMetadata?.therapistId || 'auto',
+                full_name: bookingMetadata?.fullName,
+                email: bookingMetadata?.email,
+                phone: bookingMetadata?.phone,
+                notes: bookingMetadata?.notes
             },
         });
 
+        console.log('Stripe session created:', session.url);
         return NextResponse.json({ url: session.url });
     } catch (error: any) {
         console.error('Error creating checkout session:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: `Error del servidor: ${error.message}` }, { status: 500 });
     }
 }

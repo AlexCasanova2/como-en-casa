@@ -9,6 +9,7 @@
     --glass-border: rgba(255, 255, 255, 0.15);
     --text-soft: #f4ece4;
     --header-bg: rgba(255, 255, 255, 0.2);
+    --brand-gradient: linear-gradient(135deg, #4a3f35 0%, #7a5448 50%, #d4a373 100%);
 }
 
 * {
@@ -109,6 +110,10 @@ a {
 
 .text-glow {
     text-shadow: 0 0 20px rgba(212, 163, 115, 0.4);
+}
+
+.brand-gradient {
+    background: var(--brand-gradient);
 }
 
 .hover-lift {

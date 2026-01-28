@@ -14,7 +14,9 @@ const Scene = dynamic(() => import('@/components/canvas/Scene'), {
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const isHome = pathname === '/'
-    const isPublic = !pathname?.includes('/admin')
+    const isAdmin = pathname?.includes('/admin')
+    const isDashboard = pathname?.includes('/dashboard')
+    const isPublic = !isAdmin && !isDashboard
     const [isLoading, setIsLoading] = useState(isHome)
 
     useEffect(() => {
