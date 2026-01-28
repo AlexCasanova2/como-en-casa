@@ -1,20 +1,8 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { createClient as createServerClient } from '@/lib/supabase/server'
-
-// Cliente con Service Role para operaciones administrativas (SOLO SERVIDOR)
-const getAdminClient = () => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!url || !serviceRoleKey) {
-        throw new Error('Variables de entorno de Supabase faltantes (URL o Service Role Key)');
-    }
-
-    return createClient(url, serviceRoleKey)
-}
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function createTerapeutaAction(formData: any) {
     const supabase = createServerClient()
@@ -25,7 +13,7 @@ export async function createTerapeutaAction(formData: any) {
     const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
     if (profile?.role !== 'admin') throw new Error('No tienes permisos suficientes')
 
-    const adminClient = getAdminClient()
+    const adminClient = createAdminClient()
 
     // 2. Crear usuario en Auth
     const { data: newUser, error: authError } = await adminClient.auth.admin.createUser({
@@ -70,7 +58,7 @@ export async function updateTerapeutaAction(formData: any) {
     const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
     if (profile?.role !== 'admin') throw new Error('No tienes permisos suficientes')
 
-    const adminClient = getAdminClient()
+    const adminClient = createAdminClient()
 
     // 2. Actualizar tabla terapeutas
     const { error: terapeutaError } = await adminClient
@@ -96,4 +84,114 @@ export async function updateTerapeutaAction(formData: any) {
     if (profileError) throw new Error(profileError.message)
 
     return { success: true }
+}
+
+export async function saveScheduleAction(terapeutaId: string, schedule: any[]) {
+    const supabase = createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    // 1. Verificar que quien llama es ADMIN
+    if (!user) throw new Error('No autorizado')
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    if (profile?.role !== 'admin') throw new Error('No tienes permisos suficientes')
+
+    const adminClient = createAdminClient()
+
+    // 2. Borrar horarios actuales
+    const { error: deleteError } = await adminClient
+        .from('disponibilidad_semanal')
+        .delete()
+        .eq('terapeuta_id', terapeutaId)
+
+    if (deleteError) throw new Error(deleteError.message)
+
+    // 3. Insertar nuevos (si hay)
+    if (schedule.length > 0) {
+        const { error: insertError } = await adminClient
+            .from('disponibilidad_semanal')
+            .insert(
+                schedule.map(s => ({
+                    terapeuta_id: terapeutaId,
+                    dia_semana: s.dia_semana,
+                    hora_inicio: s.hora_inicio,
+                    hora_fin: s.hora_fin
+                }))
+            )
+
+        if (insertError) throw new Error(insertError.message)
+    }
+
+    return { success: true }
+}
+
+export async function getDashboardOverviewAction() {
+    const supabase = createServerClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) throw new Error('No autorizado')
+
+    // Obtener perfil del usuario actual
+    const { data: userProfile } = await supabase.from('profiles').select('role, full_name').eq('id', user.id).single()
+
+    if (!userProfile) throw new Error('Perfil no encontrado')
+
+    const isAdmin = userProfile.role === 'admin'
+    const adminClient = createAdminClient()
+
+    // 1. Obtener Reservas Recientes
+    let bookingsQuery = adminClient
+        .from('sesiones_compradas')
+        .select(`
+            *,
+            servicios(name, price_cents),
+            profiles:user_id(full_name),
+            terapeuta:terapeuta_id(profiles(full_name))
+        `)
+        .order('created_at', { ascending: false })
+
+    if (!isAdmin) {
+        bookingsQuery = bookingsQuery.eq('terapeuta_id', user.id)
+    }
+
+    const { data: bookings, error: bookingsError } = await bookingsQuery.limit(5)
+
+    // 2. Estadísticas
+    // Si es admin, total revenue de todas las sesiones pagadas
+    let totalRevenue = 0
+    let totalSessions = 0
+
+    if (isAdmin) {
+        const { data: allPaid } = await adminClient
+            .from('sesiones_compradas')
+            .select('servicios(price_cents)')
+            .eq('status', 'paid')
+
+        totalRevenue = allPaid?.reduce((acc: number, curr: any) => acc + (curr.servicios?.price_cents || 0), 0) || 0
+
+        const { count } = await adminClient.from('sesiones_compradas').select('*', { count: 'exact', head: true })
+        totalSessions = count || 0
+    } else {
+        // Si es terapeuta, solo sus sesiones
+        const { data: mySessions } = await adminClient
+            .from('sesiones_compradas')
+            .select('servicios(price_cents)')
+            .eq('terapeuta_id', user.id)
+            .eq('status', 'paid')
+
+        totalRevenue = mySessions?.reduce((acc: number, curr: any) => acc + (curr.servicios?.price_cents || 0), 0) || 0
+        totalSessions = mySessions?.length || 0
+    }
+
+    const { count: therapistsCount } = await adminClient.from('terapeutas').select('*', { count: 'exact', head: true })
+
+    return {
+        isAdmin,
+        userName: userProfile.full_name,
+        recentBookings: bookings || [],
+        stats: {
+            totalRevenue: totalRevenue / 100,
+            totalSessions,
+            totalTherapists: therapistsCount || 0
+        }
+    }
 }

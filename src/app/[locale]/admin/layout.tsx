@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import { LayoutDashboard, Users, CreditCard, LogOut, Home, BookOpen } from 'lucide-react'
+import { LayoutDashboard, Users, CreditCard, LogOut, Home, BookOpen, Package } from 'lucide-react'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
@@ -20,10 +20,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (isLoginPage) return <div id="admin-login-wrapper">{children}</div>
 
     const navItems = [
+        { name: 'Inicio', path: '/admin/dashboard', icon: <LayoutDashboard size={20} /> },
         { name: 'Pagos', path: '/admin/dashboard/pagos', icon: <CreditCard size={20} /> },
         { name: 'Blog', path: '/admin/dashboard/blog', icon: <BookOpen size={20} /> },
         { name: 'Terapeutas', path: '/admin/dashboard/terapeutas', icon: <Users size={20} /> },
-        { name: 'Servicios', path: '/admin/dashboard/servicios', icon: <LayoutDashboard size={20} /> },
+        { name: 'Servicios', path: '/admin/dashboard/servicios', icon: <Package size={20} /> },
     ]
 
     return (

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Plus, Trash2, UserPlus, Edit2, X, Save, Mail, Lock, Clock } from 'lucide-react'
-import { createTerapeutaAction, updateTerapeutaAction } from '@/app/actions/admin'
+import { createTerapeutaAction, updateTerapeutaAction, saveScheduleAction } from '@/app/actions/admin'
 import Toast from '@/components/ui/Toast'
 
 export default function TerapeutasPage() {
@@ -143,6 +143,8 @@ export default function TerapeutasPage() {
 
     const addScheduleSlot = (dia: number) => {
         const newSlot = {
+            id: undefined, // Para slots existentes
+            tempId: crypto.randomUUID(), // Identificador estable para nuevos slots
             terapeuta_id: selectedTerapeutaForSchedule.id,
             dia_semana: dia,
             hora_inicio: '09:00',
@@ -152,31 +154,23 @@ export default function TerapeutasPage() {
     }
 
     const removeScheduleSlot = (slotToRemove: any) => {
-        setSchedule(schedule.filter(s => s !== slotToRemove))
+        setSchedule(schedule.filter(s => {
+            if (slotToRemove.id) return s.id !== slotToRemove.id
+            return s.tempId !== slotToRemove.tempId
+        }))
     }
 
     const updateScheduleSlot = (targetSlot: any, field: string, value: string) => {
-        setSchedule(schedule.map(s => s === targetSlot ? { ...s, [field]: value } : s))
+        setSchedule(schedule.map(s => {
+            const isMatch = targetSlot.id ? s.id === targetSlot.id : s.tempId === targetSlot.tempId
+            return isMatch ? { ...s, [field]: value } : s
+        }))
     }
 
     const saveSchedule = async () => {
         setIsSavingSchedule(true)
         try {
-            // 1. Borrar horarios actuales
-            await supabase.from('disponibilidad_semanal').delete().eq('terapeuta_id', selectedTerapeutaForSchedule.id)
-
-            // 2. Insertar nuevos (si hay)
-            if (schedule.length > 0) {
-                const { error } = await supabase.from('disponibilidad_semanal').insert(
-                    schedule.map(s => ({
-                        terapeuta_id: s.terapeuta_id,
-                        dia_semana: s.dia_semana,
-                        hora_inicio: s.hora_inicio,
-                        hora_fin: s.hora_fin
-                    }))
-                )
-                if (error) throw error
-            }
+            await saveScheduleAction(selectedTerapeutaForSchedule.id, schedule)
 
             setToast({
                 message: 'Horario guardado correctamente',
@@ -365,7 +359,7 @@ export default function TerapeutasPage() {
 
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                                             {slots.map(slot => (
-                                                <div key={slot.id || Math.random()} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'white', padding: '0.8rem', borderRadius: '12px', border: '1px solid #ddd' }}>
+                                                <div key={slot.id || slot.tempId} style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'white', padding: '0.8rem', borderRadius: '12px', border: '1px solid #ddd' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
                                                         <Clock size={16} color="#999" />
                                                         <input

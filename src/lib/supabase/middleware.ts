@@ -72,14 +72,14 @@ export async function updateSession(request: NextRequest, response?: NextRespons
     if (isAdmin || isEnAdmin || isEsAdmin) {
         const currentLocale = isEnAdmin ? '/en' : isEsAdmin ? '/es' : ''
         const loginPath = `${currentLocale}/admin/login`
-        const dashboardPath = `${currentLocale}/admin/dashboard/pagos`
+        const dashboardPath = `${currentLocale}/admin/dashboard`
 
         // Si no hay usuario y no está en login, redirigir a login
         if (!user && request.nextUrl.pathname !== loginPath) {
             return NextResponse.redirect(new URL(loginPath, request.url))
         }
 
-        // Si hay usuario, verificar rol admin
+        // Si hay usuario, verificar rol
         if (user) {
             const { data: profile } = await supabase
                 .from('profiles')
@@ -87,13 +87,15 @@ export async function updateSession(request: NextRequest, response?: NextRespons
                 .eq('id', user.id)
                 .single()
 
-            if (profile?.role !== 'admin' && request.nextUrl.pathname !== loginPath) {
-                // Redirigir al home si no es admin
+            const hasAccess = profile?.role === 'admin' || profile?.role === 'terapeuta'
+
+            if (!hasAccess && request.nextUrl.pathname !== loginPath) {
+                // Redirigir al home si no tiene acceso
                 return NextResponse.redirect(new URL(`${currentLocale}/`, request.url))
             }
 
-            // Si ya está logueado como admin y está en login, redirigir a dashboard
-            if (profile?.role === 'admin' && request.nextUrl.pathname === loginPath) {
+            // Si ya está logueado y tiene acceso, y está en login, redirigir a dashboard
+            if (hasAccess && request.nextUrl.pathname === loginPath) {
                 return NextResponse.redirect(new URL(dashboardPath, request.url))
             }
         }
